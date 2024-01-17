@@ -1,18 +1,35 @@
 class Preditor extends Animal {
   float aggresion;//Preditors will attack depening on how aggresive they really are + hunger levels
+  String type;
 
-
-  Preditor(float s, float rad, float a) {
+  Preditor(float s, float rad, float a, String t) {
     super(s, rad);
     this.aggresion = a;
+    this.type = t;
+  }
+  
+  if (type.equals("wolf")) {
+    //aggression is higher by an amplification
+    //image = wolf
+    //speed amplified
+    //radious amplified
+    //top of the food chain
   }
   
   
-  void draw(){
-   if  
-    
-    
-    
+  else if (){
+  //image  = fox
+  //the rest stays the same 
+  
   }
+  
+  
+  
+  //void draw(){
+  // if  
+    
+    
+    
+  //}
   
 }
