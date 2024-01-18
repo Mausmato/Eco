@@ -10,7 +10,7 @@ PImage PineNA;
 PImage PineSW;
 
 color fur = color(178, 120, 50);
-Animal wolf2;
+Predator wolf2;
 
 void setup() {
   Wolf = loadImage("models/WolfModel.png");
@@ -25,21 +25,11 @@ void setup() {
 
   size(650, 650);
   createGUI();
-  wolf2 = new Animal(20.5, 40.4);
+  wolf2 = new Predator(20.5, 40.4, 4.23, "wolf");
   wolf2.PStats();
 }
 
 void draw() {
-  background (145, 175, 105);
-  image(Wolf, 3, 1, 45, 45);
-  image(Fox, 60, 1, 45, 45);
-  image(Deer, 140, 1, 45, 45);
-  image(BushNA, 450, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
-  image(Wolf, 3, 1, 45, 45);
+  wolf2.drawMe();
+
 }

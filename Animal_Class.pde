@@ -25,5 +25,4 @@ class Animal {
    println(speed);
    println(sightRadius);
   }
-  
 }
