@@ -25,11 +25,11 @@ class Predator extends Animal {
   void drawMe() {
     if (type.equals("wolf")) {
       // Draw the wolf image
-      image(Wolf, pos.x, pos.y, 45, 45);
+      image(WolfL, pos.x, pos.y, 45, 45);
     }
     if (type.equals("fox")) {
       // Draw the wolf image
-      image(Fox, pos.x, pos.y, 45, 45);
+      image(FoxL, pos.x, pos.y, 45, 45);
     }
 
     // Add other drawing logic for different predator types if needed

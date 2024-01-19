@@ -7,15 +7,20 @@ class Prey extends Animal {
   }
 
   void drawMe() {
-
-    if (float(vel) > 0) {
-      if (type.equals("Deer")) {//and the deer is moving to the left
+    if (vel.x > 0) {
+      if (type.equals("Deer")) {
+        // Deer is moving to the right
         image(DeerR, pos.x, pos.y, 45, 45);
       }
-      // Add other drawing logic for different predator types if needed
+      // Add other drawing logic for different prey types if needed
+    }
+    if (vel.x < 0) {
+      if (type.equals("Deer")) {
+        // Deer is moving to the right
+        image(DeerR, pos.x, pos.y, 45, 45);
+      }
     }
   }
-
   void move() {
     boolean spottedPlant = false;
     this.hunger += 0.02;
