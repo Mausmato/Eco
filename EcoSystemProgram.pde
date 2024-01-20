@@ -11,10 +11,13 @@ PImage TreeNA;
 PImage TreeSW;
 PImage PineNA;
 PImage PineSW;
+PImage bg; 
+PImage SquirrelR;
+PImage SquirrelL;
 
 Predator wo;
 Predator fo;
-Prey de;
+ArrayList<Prey> preys = new ArrayList<Prey>();
 Plant[] plants = new Plant[10];
 
 void setup() {
@@ -30,6 +33,10 @@ void setup() {
   TreeSW = loadImage("models/TreeModel_SW.png");
   PineNA = loadImage("models/Pine_NA.png");
   PineSW = loadImage("models/Pine_SW.png");
+  SquirrelR = loadImage("models/SquirrelR.png");
+  SquirrelL = loadImage("models/SquirrelL.png");
+  bg = loadImage("models/background.png");
+  
 
   size(650, 650);
 
@@ -37,33 +44,38 @@ void setup() {
 
 
   makePredators();
-
   makePlants();
-
-  makePrey();
+  makePrey(5);
 }
 
-void makePrey() {
-  de = new Prey(3, 30, "Deer");
+void makePrey(int numPrey) {
+  for (int i = 0; i < numPrey; i++) {
+    preys.add(new Prey(3, 30, "Deer"));
+    preys.add(new Prey(4, 20, "Squirrel"));
+  }
 }
-
 void makePredators() {
-  wo = new Predator(20.5, 40.4, 4.23, "wolf");
-  fo = new Predator(70, 40, 20, "fox");
+  wo = new Predator(5, 40.4, 4.23, "wolf");
+  fo = new Predator(4, 40, 20, "fox");
 }
 
 void makePlants() {
   for (int i = 0; i < plants.length; i++)
-    plants[i] = new Plant(60, "PineN");
+    plants[i] = new Plant(60, "BushN");
 }
+
 void draw() {
-  background(120, 225, 40);
+  background(bg);
   wo.drawMe();
   fo.drawMe();
   wo.move();
+  fo.move();
 
-  de.drawMe();
-  de.move();
+  for (Prey p : preys) {
+    p.drawMe();
+    p.move();
+  }
+
   for (Plant p : plants) {
     p.drawMe();
   }

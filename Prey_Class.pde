@@ -3,21 +3,37 @@ class Prey extends Animal {
   Prey(float s, float rad, String t) {
     super(s, rad);
     this.type = t;
+    this.alive = true;
     // Call a method to configure the properties based on the type
   }
 
   void drawMe() {
-    if (vel.x > 0) {
-      if (type.equals("Deer")) {
-        // Deer is moving to the right
-        image(DeerR, pos.x, pos.y, 45, 45);
+    if (alive) {  // Check if the prey is alive before drawing
+      if (vel.x > 0) {
+        if (type.equalsIgnoreCase("deer")) {
+          // Prey is moving to the right
+          image(DeerR, pos.x, pos.y, 45, 45);
+        }
+        // Add other drawing logic for different prey types if needed
+      } else if (vel.x < 0) {
+        if (type.equalsIgnoreCase("deer")) {
+          // Prey is moving to the left
+          image(DeerL, pos.x, pos.y, 45, 45);
+        }
+        // Add other drawing logic for different prey types if needed
       }
-      // Add other drawing logic for different prey types if needed
-    }
-    if (vel.x < 0) {
-      if (type.equals("Deer")) {
-        // Deer is moving to the right
-        image(DeerR, pos.x, pos.y, 45, 45);
+      if (vel.x > 0) {
+        if (type.equalsIgnoreCase("squirrel")) {
+          // Prey is moving to the right
+          image(SquirrelR, pos.x, pos.y, 45, 45);
+        }
+        // Add other drawing logic for different prey types if needed
+      } else if (vel.x < 0) {
+        if (type.equalsIgnoreCase("squirrel")) {
+          // Prey is moving to the left
+          image(SquirrelL, pos.x, pos.y, 45, 45);
+        }
+        // Add other drawing logic for different prey types if needed
       }
     }
   }
@@ -77,8 +93,9 @@ class Prey extends Animal {
 
 
   void eat( Plant victim ) {
-    //4
-    victim.size -= 0.1;
-    this.hunger -= 0.25;
+    if (alive) {
+      victim.size -= 0.1;
+      this.hunger -= 0.25;
+    }
   }
 }

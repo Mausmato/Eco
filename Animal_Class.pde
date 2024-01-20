@@ -6,7 +6,7 @@ class Animal {
   float speed, sightRadius; //Will all have a speed size and sight radius
   boolean alive; //To determine if they are dead due to eaten / hunger
 
-//Constructor
+  //Constructor
   Animal(float s, float rad) {
     this.speed = s;
     this.sightRadius = rad;
@@ -20,9 +20,9 @@ class Animal {
     this.dir = new PVector( cos(angle), sin(angle) );  //Unit vector pointing in the randomly chosen angle
     this.vel = this.dir.mult( this.speed );  //Velocity = the unit vector multiplied by how fast you move
   }
-  
-  void PStats(){
-   println(speed);
-   println(sightRadius);
+
+  void PStats() {
+    println(speed);
+    println(sightRadius);
   }
 }

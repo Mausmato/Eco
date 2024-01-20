@@ -51,7 +51,7 @@ public void createGUI(){
   USER_GUI.noLoop();
   USER_GUI.setActionOnClose(G4P.KEEP_OPEN);
   USER_GUI.addDrawHandler(this, "win_draw1");
-  label1 = new GLabel(USER_GUI, 85, 30, 80, 30);
+  label1 = new GLabel(USER_GUI, 85, 20, 80, 30);
   label1.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   label1.setText("Welcome to the Eco Editor");
   label1.setLocalColorScheme(GCScheme.GREEN_SCHEME);
