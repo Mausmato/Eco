@@ -11,14 +11,16 @@ PImage TreeNA;
 PImage TreeSW;
 PImage PineNA;
 PImage PineSW;
-PImage bg; 
+PImage bg;
 PImage SquirrelR;
 PImage SquirrelL;
 
 Predator wo;
 Predator fo;
 ArrayList<Prey> preys = new ArrayList<Prey>();
-Plant[] plants = new Plant[10];
+Tree[] trees = new Tree[50];
+Edible[] edibles = new Edible[10];
+
 
 void setup() {
   WolfL = loadImage("models/WolfModelLeft.png");
@@ -36,7 +38,7 @@ void setup() {
   SquirrelR = loadImage("models/SquirrelR.png");
   SquirrelL = loadImage("models/SquirrelL.png");
   bg = loadImage("models/background.png");
-  
+
 
   size(650, 650);
 
@@ -44,8 +46,9 @@ void setup() {
 
 
   makePredators();
-  makePlants();
-  makePrey(5);
+  makeTrees();
+  makeEdibles();
+  makePrey(10);
 }
 
 void makePrey(int numPrey) {
@@ -55,15 +58,19 @@ void makePrey(int numPrey) {
   }
 }
 void makePredators() {
-  wo = new Predator(5, 40.4, 4.23, "wolf");
-  fo = new Predator(4, 40, 20, "fox");
+  wo = new Predator(1, 75, 4.23, "wolf");
+  fo = new Predator(2, 65, 20, "fox");
 }
 
-void makePlants() {
-  for (int i = 0; i < plants.length; i++)
-    plants[i] = new Plant(60, "BushN");
+void makeTrees() {
+  for (int i = 0; i < trees.length; i++)
+    trees[i] = new Tree(40, "TreeN");
 }
 
+void makeEdibles() {
+  for (int i = 0; i < edibles.length; i++)
+    edibles[i] = new Edible(30, "BushN");
+}
 void draw() {
   background(bg);
   wo.drawMe();
@@ -76,7 +83,10 @@ void draw() {
     p.move();
   }
 
-  for (Plant p : plants) {
-    p.drawMe();
+  for (Tree t : trees) {
+    t.drawMe();
+  }
+  for (Edible e : edibles) {
+    e.drawMe();
   }
 }

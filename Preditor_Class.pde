@@ -27,22 +27,21 @@ class Predator extends Animal {
     if (vel.x > 0) {
       if (type.equalsIgnoreCase("wolf")) {
         // Predator is moving to the right
-        image(WolfR, pos.x, pos.y, 45, 45);
+        image(WolfR, pos.x, pos.y, 35, 35);
       } else if (type.equalsIgnoreCase("fox")) {
         // Predator is moving to the right
-        image(FoxR, pos.x, pos.y, 45, 45);
+        image(FoxR, pos.x, pos.y, 30, 30);
       }
     } else if (vel.x < 0) {
       if (type.equalsIgnoreCase("wolf")) {
         // Predator is moving to the left
-        image(WolfL, pos.x, pos.y, 45, 45);
+        image(WolfL, pos.x, pos.y, 35, 35);
       } else if (type.equalsIgnoreCase("fox")) {
         // Predator is moving to the left
-        image(FoxL, pos.x, pos.y, 45, 45);
+        image(FoxL, pos.x, pos.y, 30, 30);
       }
     }
   }
-
 
 
   void move() {
@@ -67,18 +66,23 @@ class Predator extends Animal {
       }
     }
 
-
     if (!spottedPrey) {
       if (random(100) < 3) {
         pickRandDirection();
       }
     }
 
-    if (!predatorInBounds()) {
-      this.vel.mult(-1);
-    }
+    // Calculate the next position
+    PVector nextPos = new PVector(this.pos.x + this.vel.x, this.pos.y + this.vel.y);
 
-    this.pos.add(this.vel);
+    // Check and adjust for border collisions
+    if (nextPos.x < 0 || nextPos.x > width || nextPos.y < 0 || nextPos.y > height) {
+      // Adjust the direction to avoid walking into the wall
+      this.vel.mult(-1);
+    } else {
+      // Update the position
+      this.pos.add(this.vel);
+    }
   }
 
 

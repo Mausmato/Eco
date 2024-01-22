@@ -12,59 +12,63 @@ class Prey extends Animal {
       if (vel.x > 0) {
         if (type.equalsIgnoreCase("deer")) {
           // Prey is moving to the right
-          image(DeerR, pos.x, pos.y, 45, 45);
+          image(DeerR, pos.x, pos.y, 30, 30);
         }
         // Add other drawing logic for different prey types if needed
       } else if (vel.x < 0) {
         if (type.equalsIgnoreCase("deer")) {
           // Prey is moving to the left
-          image(DeerL, pos.x, pos.y, 45, 45);
+          image(DeerL, pos.x, pos.y, 30, 30);
         }
         // Add other drawing logic for different prey types if needed
       }
       if (vel.x > 0) {
         if (type.equalsIgnoreCase("squirrel")) {
           // Prey is moving to the right
-          image(SquirrelR, pos.x, pos.y, 45, 45);
+          image(SquirrelR, pos.x, pos.y, 27.5, 27.5);
         }
         // Add other drawing logic for different prey types if needed
       } else if (vel.x < 0) {
         if (type.equalsIgnoreCase("squirrel")) {
           // Prey is moving to the left
-          image(SquirrelL, pos.x, pos.y, 45, 45);
+          image(SquirrelL, pos.x, pos.y, 27.5, 27.5);
         }
         // Add other drawing logic for different prey types if needed
       }
     }
   }
   void move() {
-    boolean spottedPlant = false;
+    boolean spottedEdible = false;
     this.hunger += 0.02;
 
-    for (Plant pl : plants) {
-      float distToPlant = this.pos.dist(pl.pos);
+    for (Edible ed : edibles) {
+      float distToEdible = this.pos.dist(ed.pos);
 
-      if (distToPlant <= this.sightRadius && this.hunger > 0 && pl.size > 0) {
-        this.headTowards(pl);
-        spottedPlant = true;
+      if (distToEdible <= this.sightRadius && this.hunger > 0 && ed.size > 0) {
+        this.headTowards(ed);
+        spottedEdible = true;
       }
 
-      if (distToPlant < 15) {
-        this.eat(pl);
+      if (distToEdible < 15) {
+        this.eat(ed);
       }
     }
 
-    if (!spottedPlant) {
+    if (!spottedEdible) {
       if (random(100) < 3) {
         pickRandDirection();
       }
     }
+    PVector nextPos = new PVector(this.pos.x + this.vel.x, this.pos.y + this.vel.y);
 
-    if (!preyInBounds()) {
+    // Check and adjust for border collisions
+    if (nextPos.x < 0 || nextPos.x > width || nextPos.y < 0 || nextPos.y > height) {
+      // Adjust the direction to avoid walking into the wall
       this.vel.mult(-1);
+    } else {
+      // Update the position
+      this.pos.add(this.vel);
     }
-
-    this.pos.add(this.vel);
   }
 
 
@@ -76,8 +80,8 @@ class Prey extends Animal {
 
   //7
   //Head towards works by chhanging the data of the PVector of the rabbit to aim towards the plant[i]
-  void headTowards( Plant p ) {
-    PVector displacement = PVector.sub(p.pos, this.pos);
+  void headTowards( Edible e ) {
+    PVector displacement = PVector.sub(e.pos, this.pos);
     float angle = displacement.heading();
     this.dir = new PVector( cos(angle), sin(angle) );
     this.vel = this.dir.mult( this.speed );
@@ -92,10 +96,13 @@ class Prey extends Animal {
   }
 
 
-  void eat( Plant victim ) {
+  void eat( Edible victim ) {
     if (alive) {
       victim.size -= 0.1;
-      this.hunger -= 0.25;
+      this.hunger -= 0.;
+    }
+    if (this.hunger < 0){
+      alive = false;
     }
   }
 }
