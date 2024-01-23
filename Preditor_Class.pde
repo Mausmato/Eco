@@ -1,12 +1,13 @@
 class Predator extends Animal {
   float aggression; // Predators will attack depending on how aggressive they are + hunger levels
   String type;
-
+  float hunger; // Added hunger variable for each predator
 
   Predator(float s, float rad, float a, String t) {
     super(s, rad);
     this.aggression = a;
     this.type = t;
+    this.hunger = 0;
 
     // Call a method to configure the properties based on the type
     ConfigureType();
@@ -24,29 +25,42 @@ class Predator extends Animal {
   }
 
   void drawMe() {
-    if (vel.x > 0) {
-      if (type.equalsIgnoreCase("wolf")) {
-        // Predator is moving to the right
-        image(WolfR, pos.x, pos.y, 35, 35);
-      } else if (type.equalsIgnoreCase("fox")) {
-        // Predator is moving to the right
-        image(FoxR, pos.x, pos.y, 30, 30);
-      }
-    } else if (vel.x < 0) {
-      if (type.equalsIgnoreCase("wolf")) {
-        // Predator is moving to the left
-        image(WolfL, pos.x, pos.y, 35, 35);
-      } else if (type.equalsIgnoreCase("fox")) {
-        // Predator is moving to the left
-        image(FoxL, pos.x, pos.y, 30, 30);
+    if (!alive) {
+      drawDeadMarker();
+      return;
+    }
+    if (alive) {
+      if (vel.x > 0) {
+        if (type.equalsIgnoreCase("wolf")) {
+          // Predator is moving to the right
+          image(WolfR, pos.x, pos.y, 35, 35);
+        } else if (type.equalsIgnoreCase("fox")) {
+          // Predator is moving to the right
+          image(FoxR, pos.x, pos.y, 30, 30);
+        }
+      } else if (vel.x < 0) {
+        if (type.equalsIgnoreCase("wolf")) {
+          // Predator is moving to the left
+          image(WolfL, pos.x, pos.y, 35, 35);
+        } else if (type.equalsIgnoreCase("fox")) {
+          // Predator is moving to the left
+          image(FoxL, pos.x, pos.y, 30, 30);
+        }
       }
     }
   }
 
-
   void move() {
+    // Check if the predator is still alive
+    if (!alive) {
+      drawDeadMarker();
+      return;
+    }
+
     boolean spottedPrey = false;
-    this.hunger += 0.02;
+
+    // Increase hunger over time
+    this.hunger += 0.05;
 
     // Iterate through the list of prey to find the nearest prey
     Prey nearestPrey = findNearestPrey();
@@ -56,7 +70,7 @@ class Predator extends Animal {
 
       if (distToPrey <= this.sightRadius && this.hunger > 0) {
         // Move towards the nearest prey
-        headTowardsPrey(nearestPrey);
+        this.headTowardsPrey(nearestPrey);
         spottedPrey = true;
 
         // Check if the predator caught the prey
@@ -72,6 +86,12 @@ class Predator extends Animal {
       }
     }
 
+    if (hunger > 25) {
+      alive = false;
+      drawDeadMarker();
+      return; // Stop further actions if the predator is not alive
+    }
+
     // Calculate the next position
     PVector nextPos = new PVector(this.pos.x + this.vel.x, this.pos.y + this.vel.y);
 
@@ -84,8 +104,6 @@ class Predator extends Animal {
       this.pos.add(this.vel);
     }
   }
-
-
   // Method to check if the predator is within the canvas bounds
   boolean predatorInBounds() {
     return this.pos.x > 0
@@ -93,7 +111,18 @@ class Predator extends Animal {
       && this.pos.y > 0
       && this.pos.y < height;
   }
+  void drawDeadMarker() {
+    // Draw an X at the position where the predator died
+    stroke(255, 0, 0); // Red stroke color
+    line(pos.x - 10, pos.y - 10, pos.x + 10, pos.y + 10);
+    line(pos.x - 10, pos.y + 10, pos.x + 10, pos.y - 10);
 
+    // Display "wolf dead" text on top
+    fill(255, 0, 0); // Red fill color
+    textAlign(CENTER, CENTER);
+    textSize(12);
+    text("wolf dead", pos.x, pos.y - 20);
+  }
   void headTowardsPrey(Prey prey) {
     PVector displacement = PVector.sub(prey.pos, this.pos);
     float angle = displacement.heading();
@@ -102,10 +131,13 @@ class Predator extends Animal {
   }
   // Method to eat the prey
   void eat(Prey victim) {
-    println("Predator is eating!");
+    if (alive) {
 
-    victim.alive = false; // Mark the prey as not alive
-    this.hunger -= 0.25;  // Decrease the predator's hunger
+      println("Eatin");
+      println(this.hunger);
+      victim.alive = false; // Mark the prey as not alive
+      this.hunger -= 0.02;  // Decrease the predator's hunger
+    }
   }
 
   // Method to find the nearest prey

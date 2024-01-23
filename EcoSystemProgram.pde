@@ -15,10 +15,10 @@ PImage bg;
 PImage SquirrelR;
 PImage SquirrelL;
 
-Predator wo;
-Predator fo;
+ArrayList<Predator> wolves = new ArrayList<Predator>();
+ArrayList<Predator> foxes = new ArrayList<Predator>();
 ArrayList<Prey> preys = new ArrayList<Prey>();
-Tree[] trees = new Tree[50];
+Tree[] trees = new Tree[25];
 Edible[] edibles = new Edible[10];
 
 
@@ -41,7 +41,6 @@ void setup() {
 
 
   size(650, 650);
-
   createGUI();
 
 
@@ -57,9 +56,13 @@ void makePrey(int numPrey) {
     preys.add(new Prey(4, 20, "Squirrel"));
   }
 }
+
 void makePredators() {
-  wo = new Predator(1, 75, 4.23, "wolf");
-  fo = new Predator(2, 65, 20, "fox");
+  wolves.add(new Predator(1, 75, 4.23, "wolf"));
+  wolves.add(new Predator(1, 75, 4.23, "wolf"));  // Add more wolves if needed
+  
+  foxes.add(new Predator(2, 65, 20, "fox"));
+  foxes.add(new Predator(2, 65, 20, "fox"));  // Add more foxes if needed
 }
 
 void makeTrees() {
@@ -71,12 +74,26 @@ void makeEdibles() {
   for (int i = 0; i < edibles.length; i++)
     edibles[i] = new Edible(30, "BushN");
 }
+
+
+void createWolf() {
+  
+  
+}
+
 void draw() {
   background(bg);
-  wo.drawMe();
-  fo.drawMe();
-  wo.move();
-  fo.move();
+  
+  for (Predator wolf : wolves) {
+    wolf.drawMe();
+    wolf.move();
+  }
+
+  // Draw and move the foxes
+  for (Predator fox : foxes) {
+    fox.drawMe();
+    fox.move();
+  }
 
   for (Prey p : preys) {
     p.drawMe();

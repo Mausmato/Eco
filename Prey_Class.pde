@@ -40,7 +40,6 @@ class Prey extends Animal {
   void move() {
     boolean spottedEdible = false;
     this.hunger += 0.02;
-
     for (Edible ed : edibles) {
       float distToEdible = this.pos.dist(ed.pos);
 
@@ -87,7 +86,9 @@ class Prey extends Animal {
     this.vel = this.dir.mult( this.speed );
   }
 
-  //8
+  // Create a function to run away void runAway ( Preditor p) {}
+
+
   boolean preyInBounds() {
     return this.pos.x > 0
       && this.pos.x < width
@@ -98,10 +99,10 @@ class Prey extends Animal {
 
   void eat( Edible victim ) {
     if (alive) {
-      victim.size -= 0.1;
-      this.hunger -= 0.;
+      victim.size -= 0.4;
+      this.hunger -= 0.1;
     }
-    if (this.hunger < 0){
+    if (this.hunger > 20){
       alive = false;
     }
   }
