@@ -14,6 +14,9 @@ PImage PineSW;
 PImage bg;
 PImage SquirrelR;
 PImage SquirrelL;
+PImage Water;
+float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wMis, wMas;
+
 
 ArrayList<Predator> wolves = new ArrayList<Predator>();
 ArrayList<Predator> foxes = new ArrayList<Predator>();
@@ -21,8 +24,29 @@ ArrayList<Prey> preys = new ArrayList<Prey>();
 Tree[] trees = new Tree[25];
 Edible[] edibles = new Edible[10];
 
+void loadSizesFromFile(String filename) {
+  // Load the content of the file into an array of strings
+  String[] lines = loadStrings(filename);
 
+  // Parse the values from the lines
+  wMis = Float.parseFloat(lines[4]);
+  wMas = Float.parseFloat(lines[5]);
+  fMis = Float.parseFloat(lines[9]);
+  fMas = Float.parseFloat(lines[10]);
+  dMis = Float.parseFloat(lines[14]);
+  dMas = Float.parseFloat(lines[15]);
+  sMis = Float.parseFloat(lines[19]);
+  sMas = Float.parseFloat(lines[20]);
+  bMis = Float.parseFloat(lines[24]);
+  bMas = Float.parseFloat(lines[25]);
+  tMis = Float.parseFloat(lines[29]);
+  tMas = Float.parseFloat(lines[30]);
+  wMis = Float.parseFloat(lines[34]);
+  wMas = Float.parseFloat(lines[35]);
+}
 void setup() {
+  size(650, 650);
+  loadSizesFromFile("sizes.txt");
   WolfL = loadImage("models/WolfModelLeft.png");
   FoxL = loadImage("models/FoxModelLeft.png");
   WolfR = loadImage("models/WolfModelRight.png");
@@ -38,6 +62,7 @@ void setup() {
   SquirrelR = loadImage("models/SquirrelR.png");
   SquirrelL = loadImage("models/SquirrelL.png");
   bg = loadImage("models/background.png");
+  Water = loadImage("models/water.png");
 
 
   size(650, 650);
@@ -47,22 +72,22 @@ void setup() {
   makePredators();
   makeTrees();
   makeEdibles();
-  makePrey(10);
+  makePrey(18);
 }
 
 void makePrey(int numPrey) {
   for (int i = 0; i < numPrey; i++) {
-    preys.add(new Prey(3, 30, "Deer"));
-    preys.add(new Prey(4, 20, "Squirrel"));
+    preys.add(new Prey(3, 10, "Deer"));
+    preys.add(new Prey(4, 7.5, "Squirrel"));
   }
 }
 
 void makePredators() {
-  wolves.add(new Predator(1, 75, 4.23, "wolf"));
-  wolves.add(new Predator(1, 75, 4.23, "wolf"));  // Add more wolves if needed
-  
-  foxes.add(new Predator(2, 65, 20, "fox"));
-  foxes.add(new Predator(2, 65, 20, "fox"));  // Add more foxes if needed
+  //wolves.add(new Predator(4, 75, 4.23, "wolf"));
+  wolves.add(new Predator(4.5, 75, 4.23, "wolf"));  // Add more wolves if needed
+
+  foxes.add(new Predator(5, 65, 10, "fox"));
+  //foxes.add(new Predator(4.65, 65, 20, "fox"));  // Add more foxes if needed
 }
 
 void makeTrees() {
@@ -75,19 +100,18 @@ void makeEdibles() {
     edibles[i] = new Edible(30, "BushN");
 }
 
+Water wo = new Water(40, 7.5);
 
-void createWolf() {
-  
-  
-}
 
 void draw() {
   background(bg);
-  
+
   for (Predator wolf : wolves) {
     wolf.drawMe();
     wolf.move();
   }
+
+  wo.drawMe();
 
   // Draw and move the foxes
   for (Predator fox : foxes) {

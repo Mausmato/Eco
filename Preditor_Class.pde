@@ -60,7 +60,7 @@ class Predator extends Animal {
     boolean spottedPrey = false;
 
     // Increase hunger over time
-    this.hunger += 0.05;
+    this.hunger += 0.025;
 
     // Iterate through the list of prey to find the nearest prey
     Prey nearestPrey = findNearestPrey();
@@ -114,8 +114,8 @@ class Predator extends Animal {
   void drawDeadMarker() {
     // Draw an X at the position where the predator died
     stroke(255, 0, 0); // Red stroke color
-    line(pos.x - 10, pos.y - 10, pos.x + 10, pos.y + 10);
-    line(pos.x - 10, pos.y + 10, pos.x + 10, pos.y - 10);
+    line(pos.x - 6, pos.y - 6, pos.x + 6, pos.y + 6);
+    line(pos.x - 6, pos.y + 6, pos.x + 6, pos.y - 6);
 
     // Display "wolf dead" text on top
     fill(255, 0, 0); // Red fill color
@@ -136,7 +136,7 @@ class Predator extends Animal {
       println("Eatin");
       println(this.hunger);
       victim.alive = false; // Mark the prey as not alive
-      this.hunger -= 0.02;  // Decrease the predator's hunger
+      this.hunger -= 2;  // Decrease the predator's hunger
     }
   }
 

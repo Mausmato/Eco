@@ -38,6 +38,10 @@ class Prey extends Animal {
     }
   }
   void move() {
+    if (!alive) {
+      drawDeadMarker();
+      return;
+    }
     boolean spottedEdible = false;
     this.hunger += 0.02;
     for (Edible ed : edibles) {
@@ -96,13 +100,25 @@ class Prey extends Animal {
       && this.pos.x < height;
   }
 
+  void drawDeadMarker() {
+    // Draw an X at the position where the predator died
+    stroke(255, 255, 0); // Red stroke color
+    line(pos.x - 6, pos.y - 6, pos.x + 6, pos.y + 6);
+    line(pos.x - 6, pos.y + 6, pos.x + 6, pos.y - 6);
+
+    // Display "wolf dead" text on top
+    fill(255, 255, 0); // Red fill color
+    textAlign(CENTER, CENTER);
+    textSize(12);
+    text("prey dead", pos.x, pos.y - 20);
+  }
 
   void eat( Edible victim ) {
     if (alive) {
       victim.size -= 0.4;
       this.hunger -= 0.1;
     }
-    if (this.hunger > 20){
+    if (this.hunger > 20) {
       alive = false;
     }
   }
