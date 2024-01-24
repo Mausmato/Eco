@@ -68,7 +68,7 @@ void setup() {
   size(650, 650);
   createGUI();
 
-//wow
+//make the textfile make hte randomizer
   makePredators();
   makeTrees();
   makeEdibles();
