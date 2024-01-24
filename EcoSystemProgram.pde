@@ -15,7 +15,7 @@ PImage bg;
 PImage SquirrelR;
 PImage SquirrelL;
 PImage Water;
-float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wMis, wMas;
+float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wWis, wWas;
 
 
 ArrayList<Predator> wolves = new ArrayList<Predator>();
@@ -41,8 +41,8 @@ void loadSizesFromFile(String filename) {
   bMas = Float.parseFloat(lines[25]);
   tMis = Float.parseFloat(lines[29]);
   tMas = Float.parseFloat(lines[30]);
-  wMis = Float.parseFloat(lines[34]);
-  wMas = Float.parseFloat(lines[35]);
+  wWis = Float.parseFloat(lines[34]);
+  wWas = Float.parseFloat(lines[35]);
 }
 void setup() {
   size(650, 650);
