@@ -15,6 +15,11 @@ PImage bg;
 PImage SquirrelR;
 PImage SquirrelL;
 PImage Water;
+PImage FoxRL;
+PImage FoxRR;
+PImage WolfRL;
+PImage WolfRR;
+
 float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wWis, wWas;
 
 
@@ -22,6 +27,7 @@ ArrayList<Predator> wolves = new ArrayList<Predator>();
 ArrayList<Predator> foxes = new ArrayList<Predator>();
 ArrayList<Prey> preys = new ArrayList<Prey>();
 Tree[] trees = new Tree[25];
+Water[] waters = new Water[4]; // Array to store multiple water pools
 Edible[] edibles = new Edible[10];
 
 void loadSizesFromFile(String filename) {
@@ -63,17 +69,30 @@ void setup() {
   SquirrelL = loadImage("models/SquirrelL.png");
   bg = loadImage("models/background.png");
   Water = loadImage("models/water.png");
+  FoxRL = loadImage("models/FoxRestL.png");
+  FoxRR = loadImage("models/FoxRestR.png");
+  WolfRL = loadImage("models/WolfRestL.png");
+  WolfRR = loadImage("models/WolfRestR.png");
 
 
   size(650, 650);
   createGUI();
 
-//make the textfile make hte randomizer
+  //make the textfile make hte randomizer
   makePredators();
   makeTrees();
   makeEdibles();
+  makeWaters();
   makePrey(18);
 }
+
+void makeWaters() {
+  for (int i = 0; i < waters.length; i++) {
+    float waterSize = random(wWis, wWas);
+    waters[i] = new Water(waterSize, 7.5);
+  }
+}
+
 
 void makePrey(int numPrey) {
   for (int i = 0; i < numPrey; i++) {
@@ -83,21 +102,25 @@ void makePrey(int numPrey) {
 }
 
 void makePredators() {
-  //wolves.add(new Predator(4, 75, 4.23, "wolf"));
-  wolves.add(new Predator(4.5, 75, 4.23, "wolf"));  // Add more wolves if needed
+  float wolfSize = random(wMis, wMas);
+  wolves.add(new Predator(wolfSize, 75, 4.23, "wolf"));  // Add more wolves if needed
 
-  foxes.add(new Predator(5, 65, 10, "fox"));
-  //foxes.add(new Predator(4.65, 65, 20, "fox"));  // Add more foxes if needed
+  float foxSize = random(fMis, fMas);
+  foxes.add(new Predator(foxSize, 65, 10, "fox"));
 }
 
 void makeTrees() {
-  for (int i = 0; i < trees.length; i++)
-    trees[i] = new Tree(40, "TreeN");
+  for (int i = 0; i < trees.length; i++) {
+    float treeSize = random(tMis, tMas);
+    trees[i] = new Tree(treeSize, "TreeN");
+  }
 }
 
 void makeEdibles() {
-  for (int i = 0; i < edibles.length; i++)
-    edibles[i] = new Edible(30, "BushN");
+  for (int i = 0; i < edibles.length; i++) {
+    float edibleSize = random(bMis, bMas);
+    edibles[i] = new Edible(edibleSize, "BushN");
+  }
 }
 
 Water wo = new Water(40, 7.5);
@@ -111,13 +134,18 @@ void draw() {
     wolf.move();
   }
 
-  wo.drawMe();
 
   // Draw and move the foxes
   for (Predator fox : foxes) {
     fox.drawMe();
     fox.move();
   }
+
+
+  for (Water water : waters) {
+    water.drawMe();
+  }
+
 
   for (Prey p : preys) {
     p.drawMe();

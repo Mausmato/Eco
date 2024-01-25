@@ -52,7 +52,7 @@ class Prey extends Animal {
         spottedEdible = true;
       }
 
-      if (distToEdible < 15) {
+      if (distToEdible < 6) {
         this.eat(ed);
       }
     }

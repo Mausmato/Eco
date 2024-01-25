@@ -1,4 +1,4 @@
-class Animal {
+  class Animal {
   //FIELDS
   PVector pos, vel; //Will have a position + velocity
   PVector dir; //Direction
