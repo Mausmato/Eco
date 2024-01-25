@@ -26,3 +26,4 @@
     println(sightRadius);
   }
 }
+//d
