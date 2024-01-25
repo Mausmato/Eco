@@ -1,9 +1,19 @@
 class Prey extends Animal {
   String type;
-  Prey(float s, float rad, String t) {
+  ArrayList<Predator> foxes;
+  ArrayList<Predator> wolves;
+  boolean isAccelerating = false;
+  float accelerationTimer = 0;
+  float accelerationDuration = 2.0;  // Duration of acceleration in seconds
+  float normalSpeed;  // Store the normal speed for the prey
+
+  Prey(float s, float rad, String t, ArrayList<Predator> foxes, ArrayList<Predator> wolves) {
     super(s, rad);
     this.type = t;
     this.alive = true;
+    this.foxes = foxes;
+    this.wolves = wolves;
+    this.normalSpeed = this.speed;
     // Call a method to configure the properties based on the type
   }
 
@@ -43,6 +53,31 @@ class Prey extends Animal {
       return;
     }
     boolean spottedEdible = false;
+
+    runAwayFromPredators();
+    // Check for predators in range and run away
+    runAwayFromPredators();
+
+    // Check if acceleration is active
+    if (isAccelerating) {
+      // Increment the acceleration timer
+      accelerationTimer += 0.02;
+
+      // Check if acceleration duration is reached
+      if (accelerationTimer >= accelerationDuration) {
+        // Reset acceleration
+        isAccelerating = false;
+        accelerationTimer = 0;
+
+        // Reset to normal speed
+        this.speed = normalSpeed;
+      } else {
+        // Apply acceleration (increase speed)
+        this.speed += 0.01;
+      }
+    }
+
+
     this.hunger += 0.02;
     for (Edible ed : edibles) {
       float distToEdible = this.pos.dist(ed.pos);
@@ -98,6 +133,39 @@ class Prey extends Animal {
       && this.pos.x < width
       && this.pos.y > 0
       && this.pos.x < height;
+  }
+
+  void runAwayFromPredators() {
+    // Run away from foxes
+    for (Predator fox : foxes) {
+      float distToFox = this.pos.dist(fox.pos);
+
+      if (distToFox <= this.sightRadius && distToFox < fox.sightRadius) {
+        // Fox is within the prey's range, run away from it
+        PVector foxDir = PVector.sub(this.pos, fox.pos).normalize();
+        this.vel = foxDir.mult(this.speed);
+
+        // Activate acceleration
+        isAccelerating = true;
+        accelerationTimer = 0;
+        this.speed = normalSpeed + 0.5;  // You can adjust the acceleration factor
+      }
+    }
+
+    // Run away from wolves
+    for (Predator wolf : wolves) {
+      float distToWolf = this.pos.dist(wolf.pos);
+      if (distToWolf <= this.sightRadius && distToWolf < wolf.sightRadius) {
+        // Wolf is within the prey's range, run away from it
+        PVector wolfDir = PVector.sub(this.pos, wolf.pos).normalize();
+        this.vel = wolfDir.mult(this.speed);
+
+        // Activate acceleration
+        isAccelerating = true;
+        accelerationTimer = 0;
+        this.speed = normalSpeed + 0.5;  // You can adjust the acceleration factor
+      }
+    }
   }
 
   void drawDeadMarker() {

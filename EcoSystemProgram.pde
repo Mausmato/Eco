@@ -19,7 +19,7 @@ PImage FoxRL;
 PImage FoxRR;
 PImage WolfRL;
 PImage WolfRR;
-
+float minDistance = 50; // Minimum distance between objects
 float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wWis, wWas;
 
 
@@ -86,44 +86,110 @@ void setup() {
   makePrey(18);
 }
 
-void makeWaters() {
-  for (int i = 0; i < waters.length; i++) {
-    float waterSize = random(wWis, wWas);
-    waters[i] = new Water(waterSize, 7.5);
-  }
-}
+//void makeWaters() {
+//  for (int i = 0; i < waters.length; i++) {
+//    float waterSize = random(wWis, wWas);
+//    waters[i] = new Water(waterSize, 7.5);
+//  }
+//}
 
 
 void makePrey(int numPrey) {
   for (int i = 0; i < numPrey; i++) {
-    preys.add(new Prey(3, 10, "Deer"));
-    preys.add(new Prey(4, 7.5, "Squirrel"));
+    preys.add(new Prey(3, 10, "Deer", wolves, foxes));  // Pass the wolves list
+    preys.add(new Prey(4, 7.5, "Squirrel", foxes, wolves));  // Pass the foxes list
   }
 }
 
 void makePredators() {
-  float wolfSize = random(wMis, wMas);
-  wolves.add(new Predator(wolfSize, 75, 4.23, "wolf"));  // Add more wolves if needed
+  wolves.add(new Predator(2, 75, 4, "wolf"));  // Add more wolves if needed
+  foxes.add(new Predator(3, 65, 1.2, "fox"));
+}
 
-  float foxSize = random(fMis, fMas);
-  foxes.add(new Predator(foxSize, 65, 10, "fox"));
+//void makeTrees() {
+//  for (int i = 0; i < trees.length; i++) {
+//    float treeSize = random(tMis, tMas);
+//    trees[i] = new Tree(treeSize, "TreeN");
+//  }
+//}
+
+//void makeEdibles() {
+//  for (int i = 0; i < edibles.length; i++) {
+//    float edibleSize = random(bMis, bMas);
+//    edibles[i] = new Edible(edibleSize, "BushN");
+//  }
+//}
+void makeWaters() {
+  for (int i = 0; i < waters.length; i++) {
+    float waterSize = random(wWis, wWas);
+    float x = random(width);
+    float y = random(height);
+
+    // Check if the new water position is too close to existing objects
+    while (isOverlapping(x, y, waterSize)) {
+      x = random(width);
+      y = random(height);
+    }
+
+    waters[i] = new Water(x, y, waterSize, 7.5);
+  }
 }
 
 void makeTrees() {
   for (int i = 0; i < trees.length; i++) {
     float treeSize = random(tMis, tMas);
-    trees[i] = new Tree(treeSize, "TreeN");
+    float x = random(width);
+    float y = random(height);
+
+    // Check if the new tree position is too close to existing objects
+    while (isOverlapping(x, y, treeSize)) {
+      x = random(width);
+      y = random(height);
+    }
+
+    trees[i] = new Tree(x, y, treeSize, "TreeN");
   }
 }
 
 void makeEdibles() {
   for (int i = 0; i < edibles.length; i++) {
     float edibleSize = random(bMis, bMas);
-    edibles[i] = new Edible(edibleSize, "BushN");
+    float x = random(width);
+    float y = random(height);
+
+    // Check if the new edible position is too close to existing objects
+    while (isOverlapping(x, y, edibleSize)) {
+      x = random(width);
+      y = random(height);
+    }
+
+    edibles[i] = new Edible(x, y, edibleSize, "BushN");
   }
 }
 
-Water wo = new Water(40, 7.5);
+boolean isOverlapping(float x, float y, float size) {
+  // Check if the new object overlaps with existing objects
+  for (Tree t : trees) {
+    if (t != null && dist(x, y, t.getX(), t.getY()) < size + t.getSize() + minDistance) {
+      return true;
+    }
+  }
+
+  for (Edible e : edibles) {
+    if (e != null && dist(x, y, e.getX(), e.getY()) < size + e.getSize() + minDistance) {
+      return true;
+    }
+  }
+
+  for (Water w : waters) {
+    if (w != null && dist(x, y, w.getX(), w.getY()) < size + w.getSize() + minDistance) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 
 void draw() {

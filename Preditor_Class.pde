@@ -5,6 +5,8 @@ class Predator extends Animal {
   float restTimer = 0; // Timer for resting
   boolean resting = false;
   float lastRestTime = 0;
+  float wolfSize = random(wMis, wMas);
+  float foxSize = random(fMis, fMas);
 
   Predator(float s, float rad, float a, String t) {
     super(s, rad);
@@ -37,30 +39,30 @@ class Predator extends Animal {
       // Draw resting images based on the predator type
       if (type.equalsIgnoreCase("wolf")) {
         if (vel.x > 0) {
-          image(WolfRR, pos.x, pos.y, 35, 35);
+          image(WolfRR, pos.x, pos.y, wolfSize, wolfSize);
         } else {
-          image(WolfRL, pos.x, pos.y, 35, 35);
+          image(WolfRL, pos.x, pos.y, wolfSize, wolfSize);
         }
       } else if (type.equalsIgnoreCase("fox")) {
         if (vel.x > 0) {
-          image(FoxRR, pos.x, pos.y, 30, 30);
+          image(FoxRR, pos.x, pos.y, foxSize, foxSize);
         } else {
-          image(FoxRL, pos.x, pos.y, 30, 30);
+          image(FoxRL, pos.x, pos.y, foxSize, foxSize);
         }
       }
     } else {
       // Draw regular images based on the predator type and movement direction
       if (vel.x > 0) {
         if (type.equalsIgnoreCase("wolf")) {
-          image(WolfR, pos.x, pos.y, 35, 35);
+          image(WolfR, pos.x, pos.y, wolfSize, wolfSize);
         } else if (type.equalsIgnoreCase("fox")) {
           image(FoxR, pos.x, pos.y, 30, 30);
         }
       } else if (vel.x < 0) {
         if (type.equalsIgnoreCase("wolf")) {
-          image(WolfL, pos.x, pos.y, 35, 35);
+          image(WolfL, pos.x, pos.y, wolfSize, wolfSize);
         } else if (type.equalsIgnoreCase("fox")) {
-          image(FoxL, pos.x, pos.y, 30, 30);
+          image(FoxL, pos.x, pos.y, foxSize, foxSize);
         }
       }
     }
@@ -86,7 +88,7 @@ class Predator extends Animal {
       }
     } else {
       // Increase hunger over time
-      hunger += 0.025;
+      hunger += 0.25;
 
       // Check if the predator should rest
       if (hunger <= 4) {

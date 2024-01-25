@@ -10,4 +10,8 @@ class Plant {
 
     //Add to this is more ideas come while programming
   }
+
+  float getSize() {
+    return size;
+  }
 }
