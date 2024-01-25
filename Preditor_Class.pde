@@ -2,6 +2,9 @@ class Predator extends Animal {
   float aggression; // Predators will attack depending on how aggressive they are + hunger levels
   String type;
   float hunger; // Added hunger variable for each predator
+  float restTimer = 0; // Timer for resting
+  boolean resting = false;
+  float lastRestTime = 0;
 
   Predator(float s, float rad, float a, String t) {
     super(s, rad);
@@ -29,21 +32,34 @@ class Predator extends Animal {
       drawDeadMarker();
       return;
     }
-    if (alive) {
+
+    if (resting) {
+      // Draw resting images based on the predator type
+      if (type.equalsIgnoreCase("wolf")) {
+        if (vel.x > 0) {
+          image(WolfRR, pos.x, pos.y, 35, 35);
+        } else {
+          image(WolfRL, pos.x, pos.y, 35, 35);
+        }
+      } else if (type.equalsIgnoreCase("fox")) {
+        if (vel.x > 0) {
+          image(FoxRR, pos.x, pos.y, 30, 30);
+        } else {
+          image(FoxRL, pos.x, pos.y, 30, 30);
+        }
+      }
+    } else {
+      // Draw regular images based on the predator type and movement direction
       if (vel.x > 0) {
         if (type.equalsIgnoreCase("wolf")) {
-          // Predator is moving to the right
           image(WolfR, pos.x, pos.y, 35, 35);
         } else if (type.equalsIgnoreCase("fox")) {
-          // Predator is moving to the right
           image(FoxR, pos.x, pos.y, 30, 30);
         }
       } else if (vel.x < 0) {
         if (type.equalsIgnoreCase("wolf")) {
-          // Predator is moving to the left
           image(WolfL, pos.x, pos.y, 35, 35);
         } else if (type.equalsIgnoreCase("fox")) {
-          // Predator is moving to the left
           image(FoxL, pos.x, pos.y, 30, 30);
         }
       }
@@ -57,6 +73,32 @@ class Predator extends Animal {
       return;
     }
 
+    if (resting) {
+      // If resting, increment the rest timer using millis()
+      restTimer += millis() - lastRestTime;
+      lastRestTime = millis(); // Update the last rest time
+
+      // Wolves start roaming after x seconds of rest
+      if (restTimer >= 5000) { // x  milliseconds is equivalent to x/1000 seconds
+        resting = false;
+        restTimer = 0;
+        pickRandDirection(); // Resume movement after resting
+      }
+    } else {
+      // Increase hunger over time
+      hunger += 0.025;
+
+      // Check if the predator should rest
+      if (hunger <= 4) {
+        resting = true;
+        restTimer = 0;
+        lastRestTime = millis(); // Set the initial rest time
+        rest();
+        return; // Stop further actions if the predator is resting
+      }
+    }
+
+    // Continue with regular movement if not resting
     boolean spottedPrey = false;
 
     // Increase hunger over time
@@ -80,6 +122,7 @@ class Predator extends Animal {
       }
     }
 
+
     if (!spottedPrey) {
       if (random(100) < 3) {
         pickRandDirection();
@@ -93,17 +136,18 @@ class Predator extends Animal {
     }
 
     // Calculate the next position
-    PVector nextPos = new PVector(this.pos.x + this.vel.x, this.pos.y + this.vel.y);
+    PVector nextPos = new PVector(pos.x + vel.x, pos.y + vel.y);
 
     // Check and adjust for border collisions
     if (nextPos.x < 0 || nextPos.x > width || nextPos.y < 0 || nextPos.y > height) {
       // Adjust the direction to avoid walking into the wall
-      this.vel.mult(-1);
+      vel.mult(-1);
     } else {
       // Update the position
-      this.pos.add(this.vel);
+      pos.add(vel);
     }
   }
+
   // Method to check if the predator is within the canvas bounds
   boolean predatorInBounds() {
     return this.pos.x > 0
@@ -157,5 +201,25 @@ class Predator extends Animal {
     }
 
     return nearestPrey;
+  }
+
+  void rest() {
+    // Reset velocity to 0 when resting
+    vel.set(0, 0);
+
+    // Display resting images based on the predator type
+    if (type.equalsIgnoreCase("wolf")) {
+      if (vel.x > 0) {
+        image(WolfRR, pos.x, pos.y, 35, 35);
+      } else {
+        image(WolfRL, pos.x, pos.y, 35, 35);
+      }
+    } else if (type.equalsIgnoreCase("fox")) {
+      if (vel.x > 0) {
+        image(FoxRR, pos.x, pos.y, 30, 30);
+      } else {
+        image(FoxRL, pos.x, pos.y, 30, 30);
+      }
+    }
   }
 }

@@ -131,21 +131,18 @@ void draw() {
 
   for (Predator wolf : wolves) {
     wolf.drawMe();
-    wolf.move();
+    wolf.move();  // Make sure to call move even if resting
   }
-
 
   // Draw and move the foxes
   for (Predator fox : foxes) {
     fox.drawMe();
-    fox.move();
+    fox.move();  // Make sure to call move even if resting
   }
-
 
   for (Water water : waters) {
     water.drawMe();
   }
-
 
   for (Prey p : preys) {
     p.drawMe();
