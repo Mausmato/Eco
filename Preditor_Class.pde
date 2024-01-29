@@ -1,8 +1,8 @@
 class Predator extends Animal {
-  float aggression; // Predators will attack depending on how aggressive they are + hunger levels
+  float aggression;
   String type;
-  float hunger; // Added hunger variable for each predator
-  float restTimer = 0; // Timer for resting
+  float hunger;
+  float restTimer = 0;
   boolean resting = false;
   float lastRestTime = 0;
   float wolfSize = random(wMis, wMas);
@@ -14,16 +14,12 @@ class Predator extends Animal {
     this.type = t;
     this.hunger = 0;
 
-    // Call a method to configure the properties based on the type
     ConfigureType();
   }
 
   void ConfigureType() {
     if (type.equals("wolf")) {
-      aggression *= 1.5; // Adjust the amplification factor as needed
-      // image = wolf
-      // speed amplified
-      // radius amplified
+      aggression *= 1.5;
     } else if (type.equals("fox")) {
       // image = fox
     }
@@ -35,19 +31,20 @@ class Predator extends Animal {
       return;
     }
 
+    // Check if the predator is resting
     if (resting) {
       // Draw resting images based on the predator type
       if (type.equalsIgnoreCase("wolf")) {
         if (vel.x > 0) {
-          image(WolfRR, pos.x, pos.y, wolfSize, wolfSize);
+          image(WolfRR, pos.x, pos.y, 35, 35);
         } else {
-          image(WolfRL, pos.x, pos.y, wolfSize, wolfSize);
+          image(WolfRL, pos.x, pos.y, 35, 35);
         }
       } else if (type.equalsIgnoreCase("fox")) {
         if (vel.x > 0) {
-          image(FoxRR, pos.x, pos.y, foxSize, foxSize);
+          image(FoxRR, pos.x, pos.y, 30, 30);
         } else {
-          image(FoxRL, pos.x, pos.y, foxSize, foxSize);
+          image(FoxRL, pos.x, pos.y, 30, 30);
         }
       }
     } else {
@@ -68,43 +65,36 @@ class Predator extends Animal {
     }
   }
 
+
+
+
   void move() {
-    // Check if the predator is still alive
     if (!alive) {
       drawDeadMarker();
       return;
     }
 
-    if (resting) {
-      // If resting, increment the rest timer using millis()
-      restTimer += millis() - lastRestTime;
-      lastRestTime = millis(); // Update the last rest time
+    // Increase hunger over time
+    hunger += 0.025;
 
-      // Wolves start roaming after x seconds of rest
-      if (restTimer >= 5000) { // x  milliseconds is equivalent to x/1000 seconds
+    // Check if the predator should rest
+    if (hunger <= 4) {
+      // Rest for 3 seconds
+      restTimer += millis() - lastRestTime;
+      lastRestTime = millis();
+
+      if (restTimer >= 3000) {
         resting = false;
         restTimer = 0;
-        pickRandDirection(); // Resume movement after resting
-      }
-    } else {
-      // Increase hunger over time
-      hunger += 0.25;
-
-      // Check if the predator should rest
-      if (hunger <= 4) {
-        resting = true;
-        restTimer = 0;
-        lastRestTime = millis(); // Set the initial rest time
+        pickRandDirection();
+      } else {
         rest();
-        return; // Stop further actions if the predator is resting
+        return;
       }
     }
 
     // Continue with regular movement if not resting
     boolean spottedPrey = false;
-
-    // Increase hunger over time
-    this.hunger += 0.025;
 
     // Iterate through the list of prey to find the nearest prey
     Prey nearestPrey = findNearestPrey();
@@ -113,17 +103,14 @@ class Predator extends Animal {
       float distToPrey = this.pos.dist(nearestPrey.pos);
 
       if (distToPrey <= this.sightRadius && this.hunger > 0) {
-        // Move towards the nearest prey
         this.headTowardsPrey(nearestPrey);
         spottedPrey = true;
 
-        // Check if the predator caught the prey
         if (distToPrey < 15) {
           this.eat(nearestPrey);
         }
       }
     }
-
 
     if (!spottedPrey) {
       if (random(100) < 3) {
@@ -134,59 +121,49 @@ class Predator extends Animal {
     if (hunger > 25) {
       alive = false;
       drawDeadMarker();
-      return; // Stop further actions if the predator is not alive
+      return;
     }
 
-    // Calculate the next position
     PVector nextPos = new PVector(pos.x + vel.x, pos.y + vel.y);
 
-    // Check and adjust for border collisions
     if (nextPos.x < 0 || nextPos.x > width || nextPos.y < 0 || nextPos.y > height) {
-      // Adjust the direction to avoid walking into the wall
       vel.mult(-1);
     } else {
-      // Update the position
       pos.add(vel);
     }
   }
 
-  // Method to check if the predator is within the canvas bounds
   boolean predatorInBounds() {
-    return this.pos.x > 0
-      && this.pos.x < width
-      && this.pos.y > 0
-      && this.pos.y < height;
+    return this.pos.x > 0 && this.pos.x < width && this.pos.y > 0 && this.pos.y < height;
   }
+
   void drawDeadMarker() {
-    // Draw an X at the position where the predator died
-    stroke(255, 0, 0); // Red stroke color
+    stroke(255, 0, 0);
     line(pos.x - 6, pos.y - 6, pos.x + 6, pos.y + 6);
     line(pos.x - 6, pos.y + 6, pos.x + 6, pos.y - 6);
 
-    // Display "wolf dead" text on top
-    fill(255, 0, 0); // Red fill color
+    fill(255, 0, 0);
     textAlign(CENTER, CENTER);
     textSize(12);
     text("wolf dead", pos.x, pos.y - 20);
   }
+
   void headTowardsPrey(Prey prey) {
     PVector displacement = PVector.sub(prey.pos, this.pos);
     float angle = displacement.heading();
     this.dir = new PVector(cos(angle), sin(angle));
     this.vel = this.dir.mult(this.speed);
   }
-  // Method to eat the prey
+
   void eat(Prey victim) {
     if (alive) {
-
       println("Eatin");
       println(this.hunger);
-      victim.alive = false; // Mark the prey as not alive
-      this.hunger -= 2;  // Decrease the predator's hunger
+      victim.alive = false;
+      this.hunger -= 2;
     }
   }
 
-  // Method to find the nearest prey
   Prey findNearestPrey() {
     Prey nearestPrey = null;
     float minDist = Float.MAX_VALUE;
@@ -206,9 +183,6 @@ class Predator extends Animal {
   }
 
   void rest() {
-    // Reset velocity to 0 when resting
-    vel.set(0, 0);
-
     // Display resting images based on the predator type
     if (type.equalsIgnoreCase("wolf")) {
       if (vel.x > 0) {

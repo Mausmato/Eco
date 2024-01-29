@@ -106,19 +106,6 @@ void makePredators() {
   foxes.add(new Predator(3, 65, 1.2, "fox"));
 }
 
-//void makeTrees() {
-//  for (int i = 0; i < trees.length; i++) {
-//    float treeSize = random(tMis, tMas);
-//    trees[i] = new Tree(treeSize, "TreeN");
-//  }
-//}
-
-//void makeEdibles() {
-//  for (int i = 0; i < edibles.length; i++) {
-//    float edibleSize = random(bMis, bMas);
-//    edibles[i] = new Edible(edibleSize, "BushN");
-//  }
-//}
 void makeWaters() {
   for (int i = 0; i < waters.length; i++) {
     float waterSize = random(wWis, wWas);
