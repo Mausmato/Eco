@@ -1,5 +1,5 @@
 class Edible extends Plant {
-
+//constructor
   Edible(float x, float y, float si, String t) {
     super(si, t);
 
@@ -9,7 +9,7 @@ class Edible extends Plant {
 
     // Add to this if more ideas come while programming
   }
-
+//draw methoid
   void drawMe() {
     if (type.equals("BushN")) {
       image(BushNA, pos.x, pos.y, size, size);
@@ -19,11 +19,11 @@ class Edible extends Plant {
       image(BushSW, pos.x, pos.y, size, size);
     }
   }
-
+//geting x coord
   float getX() {
     return pos.x;
   }
-
+//getting y coord
   float getY() {
     return pos.y;
   }

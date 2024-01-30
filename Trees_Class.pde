@@ -1,5 +1,7 @@
 class Tree extends Plant {
 
+  
+  //constructor
   Tree(float x, float y, float si, String t) {
     super(si, t);
 
@@ -10,6 +12,8 @@ class Tree extends Plant {
     // Add to this if more ideas come while programming
   }
 
+
+//drawing the trees based on the type
   void drawMe() {
     if (type.equals("TreeN")) {
       image(TreeNA, pos.x, pos.y, size, size);
@@ -28,10 +32,14 @@ class Tree extends Plant {
     }
   }
 
+
+//get x of the trree
   float getX() {
     return pos.x;
   }
 
+
+//get y of the tree
   float getY() {
     return pos.y;
   }

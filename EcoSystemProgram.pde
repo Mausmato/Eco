@@ -1,37 +1,29 @@
+// Import G4P library for GUI controls
 import g4p_controls.*;
-PImage WolfL;
-PImage WolfR;
-PImage FoxL;
-PImage FoxR;
-PImage DeerL;
-PImage DeerR;
-PImage BushNA;
-PImage BushSW;
-PImage TreeNA;
-PImage TreeSW;
-PImage PineNA;
-PImage PineSW;
-PImage bg;
-PImage SquirrelR;
-PImage SquirrelL;
-PImage Water;
-PImage FoxRL;
-PImage FoxRR;
-PImage WolfRL;
-PImage WolfRR;
-float minDistance = 50; // Minimum distance between objects
+
+// Images
+PImage WolfL, WolfR, FoxL, FoxR, DeerL, DeerR, BushNA, BushSW, TreeNA, TreeSW, PineNA, PineSW, bg, SquirrelR, SquirrelL, Water, FoxRL, FoxRR, WolfRL, WolfRR;
+
+// Vars for size
+float minDistance = 50; // Min distance
 float wMis, wMas, fMis, fMas, dMis, dMas, sMis, sMas, bushMinSize, bMis, bMas, tMis, tMas, wWis, wWas;
 
+// Booleans
+boolean programRunning = true;
 
-ArrayList<Predator> wolves = new ArrayList<Predator>();
-ArrayList<Predator> foxes = new ArrayList<Predator>();
+// Arrays and ArrayLists
+ArrayList<Predator> wolves = new ArrayList<>();
+ArrayList<Predator> foxes = new ArrayList<>();
+ArrayList<Predator> predators = new ArrayList<Predator>();
 ArrayList<Prey> preys = new ArrayList<Prey>();
-Tree[] trees = new Tree[25];
-Water[] waters = new Water[4]; // Array to store multiple water pools
-Edible[] edibles = new Edible[10];
+Tree[] trees = new Tree[25];  //EDIT THESE
+Edible[] edibles = new Edible[25]; //EDIT THESE
+Water[] waters = new Water[4]; //EDIT THESE
+int twa, tfa, tda, tsa;
 
+// Load sizes from a file
 void loadSizesFromFile(String filename) {
-  // Load the content of the file into an array of strings
+  // Load file into an array
   String[] lines = loadStrings(filename);
 
   // Parse the values from the lines
@@ -50,9 +42,12 @@ void loadSizesFromFile(String filename) {
   wWis = Float.parseFloat(lines[34]);
   wWas = Float.parseFloat(lines[35]);
 }
+
+// Setup function
 void setup() {
   size(650, 650);
   loadSizesFromFile("sizes.txt");
+  // Load images
   WolfL = loadImage("models/WolfModelLeft.png");
   FoxL = loadImage("models/FoxModelLeft.png");
   WolfR = loadImage("models/WolfModelRight.png");
@@ -69,50 +64,65 @@ void setup() {
   SquirrelL = loadImage("models/SquirrelL.png");
   bg = loadImage("models/background.png");
   Water = loadImage("models/water.png");
-  FoxRL = loadImage("models/FoxRestL.png");
-  FoxRR = loadImage("models/FoxRestR.png");
-  WolfRL = loadImage("models/WolfRestL.png");
-  WolfRR = loadImage("models/WolfRestR.png");
 
-
-  size(650, 650);
+  // Call functions
   createGUI();
-
-  //make the textfile make hte randomizer
-  makePredators();
-  makeTrees();
   makeEdibles();
+  makeTrees();
   makeWaters();
-  makePrey(18);
+
+  // Combine wolves and foxes into the predators list
+  predators.addAll(wolves);
+  predators.addAll(foxes);
+
+  programRunning = true;
+  draw();
+  programRunning = false;
 }
 
-//void makeWaters() {
-//  for (int i = 0; i < waters.length; i++) {
-//    float waterSize = random(wWis, wWas);
-//    waters[i] = new Water(waterSize, 7.5);
-//  }
-//}
-
-
-void makePrey(int numPrey) {
-  for (int i = 0; i < numPrey; i++) {
-    preys.add(new Prey(3, 10, "Deer", wolves, foxes));  // Pass the wolves list
-    preys.add(new Prey(4, 7.5, "Squirrel", foxes, wolves));  // Pass the foxes list
+void keyPressed() {
+  if (key == ' ') {
+    // Toggle the program state when spacebar is pressed (pause / play)
+    programRunning = !programRunning;
   }
 }
 
-void makePredators() {
-  wolves.add(new Predator(2, 75, 4, "wolf"));  // Add more wolves if needed
-  foxes.add(new Predator(3, 65, 1.2, "fox"));
+void mouseClicked() {
+  println("Mouse Clicked!");
+
+  // Debug prints for predators
+  println("Predators:");
+  for (Predator predator : predators) {
+    println("Predator type: " + predator.type + ", Position: " + predator.pos);
+    float distToMouse = predator.pos.dist(new PVector(mouseX, mouseY));
+    println("Distance to mouse: " + distToMouse + ", Sight radius: " + predator.sightRadius);
+    if (distToMouse <= predator.sightRadius+30) {
+      println("Running away from mouse: " + predator.type);
+      predator.runAwayFromMouse();
+    }
+  }
+
+  // Debug prints for preys
+  println("Preys:");
+  for (Prey prey : preys) {
+    println("Prey type: " + prey.type + ", Position: " + prey.pos);
+    float distToMouse = prey.pos.dist(new PVector(mouseX, mouseY));
+    println("Distance to mouse: " + distToMouse + ", Sight radius: " + prey.sightRadius);
+    if (distToMouse <= prey.sightRadius) {
+      println("Running away from mouse: " + prey.type);
+      prey.runAwayFromMouse();
+    }
+  }
 }
 
+// Create water
 void makeWaters() {
   for (int i = 0; i < waters.length; i++) {
     float waterSize = random(wWis, wWas);
     float x = random(width);
     float y = random(height);
 
-    // Check if the new water position is too close to existing objects
+    // Overlaps
     while (isOverlapping(x, y, waterSize)) {
       x = random(width);
       y = random(height);
@@ -122,13 +132,14 @@ void makeWaters() {
   }
 }
 
+// Create Trees
 void makeTrees() {
   for (int i = 0; i < trees.length; i++) {
     float treeSize = random(tMis, tMas);
     float x = random(width);
     float y = random(height);
 
-    // Check if the new tree position is too close to existing objects
+    // Overlaps
     while (isOverlapping(x, y, treeSize)) {
       x = random(width);
       y = random(height);
@@ -138,13 +149,14 @@ void makeTrees() {
   }
 }
 
+// Edibles
 void makeEdibles() {
   for (int i = 0; i < edibles.length; i++) {
     float edibleSize = random(bMis, bMas);
     float x = random(width);
     float y = random(height);
 
-    // Check if the new edible position is too close to existing objects
+    // Overlaps
     while (isOverlapping(x, y, edibleSize)) {
       x = random(width);
       y = random(height);
@@ -154,8 +166,56 @@ void makeEdibles() {
   }
 }
 
+// Spawns
+void spawnEntity(String entityType) {
+  float x = random(width);
+  float y = random(height);
+  float entitySize = 5;
+  Predator predator = null;
+
+  // Overlaps
+  while (isOverlapping(x, y, entitySize)) {
+    x = random(width);
+    y = random(height);
+  }
+
+  // Picker
+  switch (entityType) {
+  case "wolf":
+    predator = new Predator(2, 60, 3, "wolf");
+    wolves.add(predator);
+    break;
+  case "fox":
+    predator = new Predator(3, 60, 5, "fox");
+    foxes.add(predator);
+    break;
+  case "deer":
+    preys.add(new Prey(3, 60, "deer", foxes, wolves));
+    break;
+  case "squirrel":
+    preys.add(new Prey(2, 40, "squirrel", foxes, wolves));
+    break;
+  }
+
+
+  // Add the predator to the general predators list
+  if (predator != null) {
+    predators.add(predator);
+  }
+
+  if (entityType.equals("wolf")) {
+    twa++;
+  } else if (entityType.equals("fox")) {
+    tfa++;
+  } else if (entityType.equals("deer")) {
+    tda++;
+  } else if (entityType.equals("squirrel")) {
+    tsa++;
+  }
+}
+
+//overlaps
 boolean isOverlapping(float x, float y, float size) {
-  // Check if the new object overlaps with existing objects
   for (Tree t : trees) {
     if (t != null && dist(x, y, t.getX(), t.getY()) < size + t.getSize() + minDistance) {
       return true;
@@ -177,35 +237,60 @@ boolean isOverlapping(float x, float y, float size) {
   return false;
 }
 
-
-
+// Draw function
 void draw() {
-  background(bg);
+  if (programRunning) {
+    background(bg); // Set background image
 
-  for (Predator wolf : wolves) {
-    wolf.drawMe();
-    wolf.move();  // Make sure to call move even if resting
+    // Draw and move the wolves
+    for (Predator wolf : wolves) {
+      wolf.drawMe();
+      wolf.move();
+    }
+
+    // Draw and move the foxes
+    for (Predator fox : foxes) {
+      fox.drawMe();
+      fox.move();
+    }
+
+    // Draw the waters
+    for (Water water : waters) {
+      water.drawMe();
+    }
+
+    // Draw and move the preys
+    for (Prey p : preys) {
+      p.drawMe();
+      p.move();
+    }
+
+    // Draw the trees
+    for (Tree t : trees) {
+      t.drawMe();
+    }
+
+    // Draw the edibles
+    for (Edible e : edibles) {
+      e.drawMe();
+    }
   }
 
-  // Draw and move the foxes
-  for (Predator fox : foxes) {
-    fox.drawMe();
-    fox.move();  // Make sure to call move even if resting
-  }
+  // Total counts with background rectangles
+  fill(255);
+  textAlign(LEFT, TOP);
+  textSize(12);
 
-  for (Water water : waters) {
-    water.drawMe();
-  }
+  displayCount("Total wolves added: " + twa, 10, 10);
+  displayCount("Total foxes added: " + tfa, 10, 30);
+  displayCount("Total deer added: " + tda, 10, 50);
+  displayCount("Total squirrels added: " + tsa, 10, 70);
+}
 
-  for (Prey p : preys) {
-    p.drawMe();
-    p.move();
-  }
-
-  for (Tree t : trees) {
-    t.drawMe();
-  }
-  for (Edible e : edibles) {
-    e.drawMe();
-  }
+void displayCount(String text, int x, int y) {
+  float textWidth = textWidth(text);
+  fill(255, 200); //Alpha values very cool!
+  rect(x - 5, y - 2, textWidth + 10, 15); // Background rectangle
+  fill(0); // Text color
+  text(text, x, y); // Display the text
 }
