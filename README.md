@@ -1,2 +1,1 @@
-Very cool project.
-working very hard and strong.
+Work on this later to implement better features
